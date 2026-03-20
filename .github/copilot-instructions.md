@@ -26,6 +26,7 @@ vim -Nu NONE -n -c "helptags doc" -c "qall!"
 
 - `plugin/vimsession.vim` is the thin entrypoint. It guards against double-loading, sets default `g:` options, defines the user commands, and wires the lifecycle through `VimEnter`/`VimLeavePre` autocmds.
 - `autoload/vimsession.vim` contains all behavior. `vimsession#session_root()` resolves the session directory, `vimsession#session_file()` maps the current working directory to a stable session filename, and the remaining `vimsession#*` functions implement load/save/delete and auto-start/auto-save flows.
+- `autoload/vimsession.vim` also owns session-repair helpers for plugin interoperability. Today that includes fixing placeholder `NERD_tree_tab_*` buffers after session restore when NERDTree is installed.
 - `doc/vimsession.txt` is the canonical user-facing contract. When commands, defaults, or behavior change, keep this help file in sync and refresh `doc/tags`.
 
 ## Key conventions
@@ -43,4 +44,5 @@ vim -Nu NONE -n -c "helptags doc" -c "qall!"
   - `g:vimsession_is_loading` suppresses save-on-exit while sourcing a session.
   - `g:vimsession_skip_auto_save_once` prevents immediately recreating a session after `:SessionDelete`.
   - `g:vimsession_active_file` tracks the current resolved session path.
+- Interoperability fixes belong in the plugin, not in user config, when they are a direct consequence of `vimsession` loading/saving sessions.
 - Existing user-visible messages use `echomsg`, with missing-session cases highlighted via `WarningMsg`. Match that style when adding new feedback.

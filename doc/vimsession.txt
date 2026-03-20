@@ -11,6 +11,8 @@ Behavior:
   exists.
 - If it does not exist yet, create it immediately with `:mksession!`.
 - On `VimLeavePre`, save the session automatically.
+- When NERDTree is installed, repair placeholder `NERD_tree_tab_*` buffers
+  after session load so reopening Vim does not leave an empty tree pane behind.
 
 COMMANDS                                                    *vimsession-commands*
 

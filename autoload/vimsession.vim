@@ -33,6 +33,55 @@ function! vimsession#ensure_session_root() abort
   return l:root
 endfunction
 
+function! vimsession#repair_nerdtree_session() abort
+  if !exists('g:NERDTreeCreator')
+    return
+  endif
+
+  let l:current_win = win_getid()
+
+  for l:tab in range(1, tabpagenr('$'))
+    for l:winnr in reverse(range(1, tabpagewinnr(l:tab, '$')))
+      let l:winid = win_getid(l:winnr, l:tab)
+      let l:bufnr = winbufnr(l:winid)
+      let l:bufname = bufname(l:bufnr)
+
+      if l:bufname =~# '^NERD_tree_tab_\d\+$' && empty(getbufvar(l:bufnr, 'NERDTree'))
+        call win_gotoid(l:winid)
+        let t:NERDTreeBufName = l:bufname
+        execute 'file TRASH_' . l:bufname
+        bwipeout!
+        call g:NERDTreeCreator.CreateTabTree(getcwd())
+      endif
+    endfor
+  endfor
+
+  call win_gotoid(l:current_win)
+endfunction
+
+function! vimsession#close_stale_nerdtree_windows() abort
+  let l:current_tab = tabpagenr()
+  let l:current_win = win_getid()
+
+  for l:tab in range(1, tabpagenr('$'))
+    for l:winnr in reverse(range(1, tabpagewinnr(l:tab, '$')))
+      let l:winid = win_getid(l:winnr, l:tab)
+      let l:bufnr = winbufnr(l:winid)
+
+      if bufname(l:bufnr) =~# '^NERD_tree_tab_\d\+$'
+            \ && empty(getbufvar(l:bufnr, 'NERDTree'))
+            \ && tabpagewinnr(l:tab, '$') > 1
+        call win_gotoid(l:winid)
+        close
+      endif
+    endfor
+  endfor
+
+  if win_gotoid(l:current_win) == 0
+    execute 'tabnext ' . l:current_tab
+  endif
+endfunction
+
 function! vimsession#save_current(...) abort
   let l:silent = a:0 ? a:1 : 0
   let l:session = vimsession#session_file()
