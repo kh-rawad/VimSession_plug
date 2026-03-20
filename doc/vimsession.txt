@@ -1,0 +1,48 @@
+*vimsession.txt*  Per-directory session management with :mksession
+
+INTRODUCTION                                                *vimsession*
+
+This plugin stores one session file per working directory under
+`~/.vim_sessions/` by default.
+
+Behavior:
+
+- On `VimEnter`, load the session for the current working directory if it
+  exists.
+- If it does not exist yet, create it immediately with `:mksession!`.
+- On `VimLeavePre`, save the session automatically.
+
+COMMANDS                                                    *vimsession-commands*
+
+:SessionLoad
+    Load the session for the current working directory.
+
+:SessionSave
+    Save the session for the current working directory.
+
+:SessionDelete
+    Delete the session file for the current working directory and skip the
+    next automatic save on exit.
+
+:SessionPath
+    Echo the full path to the session file for the current working directory.
+
+CONFIGURATION                                               *vimsession-config*
+
+let g:vimsession_directory = '~/.vim_sessions'
+let g:vimsession_auto_load = 1
+let g:vimsession_auto_save = 1
+let g:vimsession_create_on_start = 1
+
+INSTALLATION                                                *vimsession-install*
+
+For the current `vim-plug` setup:
+
+    Plug '~/VimSession_plug'
+
+Optional example configuration:
+
+    let g:vimsession_directory = '~/.vim_sessions'
+    let g:vimsession_auto_load = 1
+    let g:vimsession_auto_save = 1
+    let g:vimsession_create_on_start = 1
