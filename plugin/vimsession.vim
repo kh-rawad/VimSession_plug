@@ -16,6 +16,7 @@ command! -bar SessionPath echomsg vimsession#session_file()
 augroup vimsession_plugin
   autocmd!
   autocmd SessionLoadPost * call vimsession#repair_nerdtree_session()
+  autocmd SessionLoadPost * call vimsession#restore_buffer_detection()
   autocmd VimEnter * call vimsession#maybe_auto_start()
   autocmd VimEnter * call vimsession#close_stale_nerdtree_windows()
   autocmd VimLeavePre * call vimsession#maybe_auto_save()

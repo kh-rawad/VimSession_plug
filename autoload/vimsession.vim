@@ -82,6 +82,33 @@ function! vimsession#close_stale_nerdtree_windows() abort
   endif
 endfunction
 
+function! vimsession#restore_buffer_detection() abort
+  let l:current_win = win_getid()
+
+  for l:tab in range(1, tabpagenr('$'))
+    for l:winnr in range(1, tabpagewinnr(l:tab, '$'))
+      let l:winid = win_getid(l:winnr, l:tab)
+      call win_gotoid(l:winid)
+
+      let l:path = expand('%:p')
+      if &buftype !=# '' || empty(l:path) || !filereadable(l:path)
+        continue
+      endif
+
+      if empty(&filetype) || empty(get(b:, 'current_syntax', ''))
+        doautocmd <nomodeline> BufRead
+        doautocmd <nomodeline> BufWinEnter
+
+        if exists('g:syntax_on') && empty(get(b:, 'current_syntax', ''))
+          syntax enable
+        endif
+      endif
+    endfor
+  endfor
+
+  call win_gotoid(l:current_win)
+endfunction
+
 function! vimsession#save_current(...) abort
   let l:silent = a:0 ? a:1 : 0
   let l:session = vimsession#session_file()

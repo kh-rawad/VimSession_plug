@@ -9,6 +9,7 @@ This plugin stores one session file per working directory under `~/.vim_sessions
 - On `VimEnter`, load the session for the current working directory if it exists.
 - If no session exists yet, create it immediately.
 - On `VimLeavePre`, save the session automatically.
+- Restored file buffers have filetype and syntax detection re-run so highlighting comes back after reopen.
 - If NERDTree is installed, session restore repairs placeholder tree buffers so reopening Vim does not leave an empty left pane behind.
 
 ## Installation
